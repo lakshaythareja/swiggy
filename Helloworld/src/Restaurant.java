@@ -23,9 +23,9 @@ public class Restaurant {
         for (int i = 1; i < 24; i++) {
             if(this.isOpen[i]!=this.isOpen[i-1]){
                 if(this.isOpen[i])
-                    Main.priorityQueue.add(new UpdateRestaurantState(i,this.restaurantId, false));
+                    Main.updateQueue.add(new UpdateRestaurantState(i,this.restaurantId, false));
                 else
-                    Main.priorityQueue.add(new UpdateRestaurantState(i,this.restaurantId, true));
+                    Main.updateQueue.add(new UpdateRestaurantState(i,this.restaurantId, true));
             }
         }
     }

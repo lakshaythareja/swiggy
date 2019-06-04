@@ -2,21 +2,9 @@ import java.util.*;
 
 public class Main {
 
-    static PriorityQueue<UpdateRestaurantState> priorityQueue = new PriorityQueue<>((o1, o2) -> {
-        if(o1.starttime<o2.starttime)
-            return -1;
-        else if (o1.starttime==o2.starttime)
-            return 0;
-        return 1;
-    });
+    static ArrayList<UpdateRestaurantState> updateQueue = new ArrayList<>();
 
-    private static PriorityQueue<UpdateRestaurantState> togglePriorityQueue = new PriorityQueue<>((o1, o2) -> {
-        if(o1.starttime<o2.starttime)
-            return -1;
-        else if (o1.starttime==o2.starttime)
-            return 0;
-        return 1;
-    });
+    private static ArrayList<UpdateRestaurantState> toggleQueue = new ArrayList<>();
 
     private static ArrayList<Restaurant> restaurants = new ArrayList<>();
     private static ArrayList<Restaurant> openRestaurants = new ArrayList<>();
@@ -49,9 +37,9 @@ public class Main {
                 case 4:
                     updateCache();
                     break;
-
             }
         }
+        System.exit(1);
     }
 
 
@@ -88,7 +76,6 @@ public class Main {
         int restaurantId = sc.nextInt();
         Restaurant restaurant = new Restaurant(restaurantId);
         restaurants.add(restaurant);
-        closedRestaurants.add(restaurant);
         System.out.println("Please enter the timings of the restaurant");
         System.out.println("Enter the number of timing values");
         int numberOfTiming = sc.nextInt();
@@ -118,8 +105,8 @@ public class Main {
         start = sc.nextInt();
         System.out.println("Enter the end time");
         end = sc.nextInt();
-        togglePriorityQueue.add(new UpdateRestaurantState(start,restaurantId,false));
-        togglePriorityQueue.add(new UpdateRestaurantState(end,restaurantId,false));
+        toggleQueue.add(new UpdateRestaurantState(start,restaurantId,false));
+        toggleQueue.add(new UpdateRestaurantState(end,restaurantId,false));
         getInput();
     }
 
@@ -128,9 +115,8 @@ public class Main {
         System.out.println("Enter the time for which cache should be updated");
         int currentTime = sc.nextInt();
         System.out.println("Updating the cache for current time period");
-        for(int i=0;i<priorityQueue.size();i++){
-            UpdateRestaurantState updateRestaurantState = priorityQueue.peek();
-            if(updateRestaurantState.starttime==currentTime) {
+        for (UpdateRestaurantState updateRestaurantState : updateQueue) {
+            if (updateRestaurantState.starttime == currentTime) {
                 Restaurant restaurant = restaurants.get(restaurants.indexOf(new Restaurant(updateRestaurantState.restaurantId)));
                 if (updateRestaurantState.changeToClosed) {
                     openRestaurants.remove(restaurant);
@@ -142,15 +128,14 @@ public class Main {
             }
         }
 
-        for(int i=0;i<togglePriorityQueue.size();i++) {
-            UpdateRestaurantState updateRestaurantState = togglePriorityQueue.poll();
-            if(updateRestaurantState.starttime==currentTime) {
+        for (UpdateRestaurantState updateRestaurantState : toggleQueue) {
+            if (updateRestaurantState.starttime == currentTime) {
                 Restaurant restaurant = restaurants.get(restaurants.indexOf(new Restaurant(updateRestaurantState.restaurantId)));
                 restaurant.setTemporary(!restaurant.getTemporary());
-                if(openRestaurants.contains(restaurant)){
+                if (openRestaurants.contains(restaurant)) {
                     openRestaurants.remove(restaurant);
                     closedRestaurants.add(restaurant);
-                }else{
+                } else {
                     closedRestaurants.remove(restaurant);
                     openRestaurants.add(restaurant);
                 }
