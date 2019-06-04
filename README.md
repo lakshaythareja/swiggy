@@ -87,3 +87,9 @@ What would you like to do
 Enter the current time
 3
 Restaurant 1 closed will open at 4
+
+
+
+For Scale (Not 100% sure this is the optimal way to do it):
+We can run a periodic service/cron jobs that just updates the cache at that interval or we can have a lambda function trigger a cache update whenever the time is the same as the starttime of updateState.
+For caching we can use a redis cache.
